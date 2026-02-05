@@ -19,7 +19,7 @@ async function main() {
   });
 
   const response = await client.chat.completions.create({
-    model: "anthropic/claude-haiku-4.5",
+    model: "arcee-ai/trinity-large-preview:free",
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -28,7 +28,7 @@ async function main() {
   }
 
   // You can use print statements as follows for debugging, they'll be visible when running tests.
-  console.error("Logs from your program will appear here!");
+  // console.error("Logs from your program will appear here!");
 
   // TODO: Uncomment the lines below to pass the first stage
   console.log(response.choices[0].message.content);
