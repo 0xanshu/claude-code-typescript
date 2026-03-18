@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import fs from "fs/promises";
 
 async function main() {
   const [, , flag, prompt] = process.argv;
@@ -46,12 +47,24 @@ async function main() {
     throw new Error("no choices in response");
   }
 
-  // You can use print statements as follows for debugging, they'll be visible when running tests.
-  // console.error("Logs from your program will appear here!");
+  const tool_call = response.choices[0].message.tool_calls;
 
-  // TODO: Uncomment the lines below to pass the first stage
-  console.log(response.choices);
-  // console.log(response.choices[0].message.tool_calls);
+  if (tool_call) {
+    if (tool_call[0].type === "function") {
+      let functionName = tool_call[0].function.name;
+      let functionArgs = tool_call[0].function.arguments;
+
+      if (functionName === "Read") {
+        const filePath = JSON.parse(functionArgs).file_path;
+        const fileContents = await fs.readFile(filePath, "utf-8");
+        console.log(fileContents);
+      } else {
+        console.log(`Unknown function: ${functionName}`);
+      }
+    }
+  } else {
+    console.log(response.choices[0].message.content);
+  }
 }
 
 main();
